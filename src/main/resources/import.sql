@@ -1,0 +1,10 @@
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('a1f984f5-53cf-4c0b-8e41-6b3c94d45a1b', 'Cozy Cottage', 'John Doe', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('b830b5d9-eac3-4ee6-8ac2-075c049c5a62', 'Modern Apartment', 'Jane Smith', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('c2a84d87-0e24-4bb7-b78f-1e2eabae1e45', 'Charming Townhouse', 'Robert Johnson', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('d8916cb5-4e2b-4b4e-9a03-9861f51c4560', 'Luxury Penthouse', 'Emily White', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('e6e9636c-0e14-4bf4-a8ce-36db31881b19', 'Riverside Villa', 'David Brown', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('f124e8f3-b6c7-4ea9-96bb-cf0fbd9e394d', 'Urban Loft', 'Sophia Davis', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('g0c97b7d-893d-4a8d-9be5-97d3f754fe11', 'Suburban Retreat', 'Michael Wilson', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('h9d21453-272a-42b7-9d20-3d48f44b4912', 'Seaside Mansion', 'Olivia Taylor', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('i0cf3004-0d8b-45ce-8d7b-7f8c58e3a6a0', 'Downtown Condo', 'William Moore', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
+INSERT INTO PROPERTIES  (id, Name, Owner, created_at, updated_at) VALUES ('j5f83985-1702-4f46-bdcd-978a63ec2e37', 'Mountain Chalet', 'Ava Anderson', '2023-11-23 12:00:00', '2023-11-23 12:00:00');
