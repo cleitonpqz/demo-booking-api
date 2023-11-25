@@ -10,7 +10,8 @@
 ```
 
 
-### Technical Debts
+### Technical Debts (not required in the challenge)
+* security layer
 * unit tests
 * api documentation
 * validating blocks
