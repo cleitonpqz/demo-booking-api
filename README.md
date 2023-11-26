@@ -14,5 +14,3 @@
 * security layer
 * unit tests
 * api documentation
-* validating blocks
-    * check if there is already a non-canceled booking on creating or updating a block for a property

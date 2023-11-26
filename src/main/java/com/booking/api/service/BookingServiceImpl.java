@@ -11,18 +11,17 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Service
 public class BookingServiceImpl implements BookingService {
 
     private final BookingDao bookingDao;
-    private final BlockService blockService;
+    private final PropertyAvailabilityService propertyAvailabilityService;
 
-    public BookingServiceImpl(BookingDao bookingDao, BlockService blockService) {
+    public BookingServiceImpl(BookingDao bookingDao, PropertyAvailabilityService propertyAvailabilityService) {
         this.bookingDao = bookingDao;
-        this.blockService = blockService;
+        this.propertyAvailabilityService = propertyAvailabilityService;
     }
 
     public Booking save(Booking booking) throws InvalidPropertyException, InvalidDateRangeException, BlockedDateRangeException, BookingDateRageException {
@@ -31,11 +30,11 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidDateRangeException();
         }
 
-        if (blockService.isDateRangeBlockedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBlockedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
             throw new BlockedDateRangeException();
         }
 
-        if (isDateRangeUsedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBookedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
             throw new BookingDateRageException();
         }
 
@@ -57,11 +56,11 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidDateRangeException();
         }
 
-        if (blockService.isDateRangeBlockedForTheProperty(from, to, booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBlockedForTheProperty(from, to, booking.getProperty().getId())) {
             throw new BlockedDateRangeException();
         }
 
-        if (isDateRangeUsedForThePropertyAndOtherBookings(id, from, to, booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBookedForThePropertyAndOtherBookings(id, from, to, booking.getProperty().getId())) {
             throw new BookingDateRageException();
         }
 
@@ -85,11 +84,11 @@ public class BookingServiceImpl implements BookingService {
     public void rebook(UUID id) throws BookingNotFoundException, BlockedDateRangeException, BookingDateRageException {
         Booking booking = bookingDao.findById(id).orElseThrow(() -> new BookingNotFoundException());
 
-        if (blockService.isDateRangeBlockedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBlockedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
             throw new BlockedDateRangeException();
         }
 
-        if (isDateRangeUsedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
+        if (propertyAvailabilityService.isDateRangeBookedForTheProperty(booking.getFromDate(), booking.getToDate(), booking.getProperty().getId())) {
             throw new BookingDateRageException();
         }
 
@@ -97,13 +96,4 @@ public class BookingServiceImpl implements BookingService {
         bookingDao.save(booking);
     }
 
-    private boolean isDateRangeUsedForTheProperty(LocalDate fromDate, LocalDate toDate, UUID propertyId) {
-        List<Booking> bookings = bookingDao.bookingsByPropertyAndDateRange(propertyId, fromDate, toDate);
-        return bookings.size() > 0;
-    }
-
-    private boolean isDateRangeUsedForThePropertyAndOtherBookings(UUID bookingId, LocalDate fromDate, LocalDate toDate, UUID propertyId) {
-        List<Booking> bookings = bookingDao.bookingsByPropertyAndDateRangeExcludingCurrentBooking(bookingId, propertyId, fromDate, toDate);
-        return bookings.size() > 0;
-    }
 }

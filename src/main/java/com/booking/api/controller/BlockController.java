@@ -2,6 +2,8 @@ package com.booking.api.controller;
 
 import com.booking.api.domain.Block;
 import com.booking.api.exceptions.BlockNotFoundException;
+import com.booking.api.exceptions.BlockedDateRangeException;
+import com.booking.api.exceptions.BookingDateRageException;
 import com.booking.api.exceptions.InvalidDateRangeException;
 import com.booking.api.exceptions.InvalidPropertyException;
 import com.booking.api.service.BlockService;
@@ -30,14 +32,14 @@ public class BlockController {
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity create(@RequestBody Block block) throws InvalidPropertyException, URISyntaxException, InvalidDateRangeException {
+    public ResponseEntity create(@RequestBody Block block) throws InvalidPropertyException, URISyntaxException, InvalidDateRangeException, BookingDateRageException, BlockedDateRangeException {
         Block savedBlock = blockService.create(block);
         URI location = new URI("/blocks/" + savedBlock.getId());
         return ResponseEntity.created(location).body(savedBlock);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable UUID id, @RequestBody Block block) throws BlockNotFoundException, InvalidDateRangeException {
+    public ResponseEntity update(@PathVariable UUID id, @RequestBody Block block) throws BlockNotFoundException, InvalidDateRangeException, BookingDateRageException, BlockedDateRangeException {
         return ResponseEntity.ok(blockService.update(id, block.getFromDate(), block.getToDate()));
     }
 

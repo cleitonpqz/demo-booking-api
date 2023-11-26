@@ -2,6 +2,8 @@ package com.booking.api.service;
 
 import com.booking.api.domain.Block;
 import com.booking.api.exceptions.BlockNotFoundException;
+import com.booking.api.exceptions.BlockedDateRangeException;
+import com.booking.api.exceptions.BookingDateRageException;
 import com.booking.api.exceptions.InvalidDateRangeException;
 import com.booking.api.exceptions.InvalidPropertyException;
 import com.booking.api.repository.BlockDao;
@@ -9,22 +11,31 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Service
 public class BlockServiceImpl implements BlockService {
 
     private BlockDao blockDao;
+    private PropertyAvailabilityService propertyAvailabilityService;
 
-    public BlockServiceImpl(BlockDao blockDao) {
+    public BlockServiceImpl(BlockDao blockDao, PropertyAvailabilityService propertyAvailabilityService) {
         this.blockDao = blockDao;
+        this.propertyAvailabilityService = propertyAvailabilityService;
     }
 
-    public Block create(Block block) throws InvalidPropertyException, InvalidDateRangeException {
+    public Block create(Block block) throws InvalidPropertyException, InvalidDateRangeException, BlockedDateRangeException, BookingDateRageException {
 
         if (block.getFromDate().isAfter(block.getToDate())) {
             throw new InvalidDateRangeException();
+        }
+
+        if (propertyAvailabilityService.isDateRangeBlockedForTheProperty(block.getFromDate(), block.getToDate(), block.getProperty().getId())) {
+            throw new BlockedDateRangeException();
+        }
+
+        if (propertyAvailabilityService.isDateRangeBookedForTheProperty(block.getFromDate(), block.getToDate(), block.getProperty().getId())) {
+            throw new BookingDateRageException();
         }
 
         try {
@@ -34,11 +45,19 @@ public class BlockServiceImpl implements BlockService {
         }
     }
 
-    public Block update(UUID id, LocalDate from, LocalDate to) throws BlockNotFoundException, InvalidDateRangeException {
+    public Block update(UUID id, LocalDate from, LocalDate to) throws BlockNotFoundException, InvalidDateRangeException, BlockedDateRangeException, BookingDateRageException {
         Block block = blockDao.findById(id).orElseThrow(() -> new BlockNotFoundException());
 
         if (block.getFromDate().isAfter(block.getToDate())) {
             throw new InvalidDateRangeException();
+        }
+
+        if (propertyAvailabilityService.isDateRangeBlockedForTheProperty(block.getFromDate(), block.getToDate(), block.getProperty().getId())) {
+            throw new BlockedDateRangeException();
+        }
+
+        if (propertyAvailabilityService.isDateRangeBookedForTheProperty(block.getFromDate(), block.getToDate(), block.getProperty().getId())) {
+            throw new BookingDateRageException();
         }
 
         block.setFromDate(from);
@@ -52,8 +71,4 @@ public class BlockServiceImpl implements BlockService {
         blockDao.delete(block);
     }
 
-    public boolean isDateRangeBlockedForTheProperty(LocalDate from, LocalDate to, UUID propertyId) {
-        List<Block> blocksByPropertyAndDateRange = blockDao.findBlocksByPropertyAndDateRange(propertyId, from, to);
-        return blocksByPropertyAndDateRange.size() > 0;
-    }
 }
